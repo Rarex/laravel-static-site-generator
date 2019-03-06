@@ -10,13 +10,13 @@ composer require rarex/laravel-static-site-generator
 ## Usage
 
 > If you are using Laravel version lower than 5.5 add following code to your `config/app.php` `providers` array:
->```php
+>```
 >Rarex\LaravelStaticSiteGenerator\Providers\ServiceProvider::class,
 >``` 
 
 
 Run `static-site` artisan console command:
-```php
+```
 php artisan static-site -v
 ```
 
@@ -32,7 +32,7 @@ if (file_exists($staticSiteFile)) {
 
 ## Configuration 
 Run `static-site:publish` artisan console command:
-```php
+```
 php artisan static-site:publish -v
 ```
 `static-site.php` file will be created at application config directory
@@ -62,7 +62,7 @@ Parameter | Default Value | Description
 
 Clean destination directory and create static files
 
-```php
+```
 php artisan static-site
 ```
 
@@ -79,7 +79,7 @@ Argument | Default Value | Description
 
 Create static files
 
-```php
+```
 php artisan static-site:make
 ```
 
@@ -110,7 +110,7 @@ Argument | Default Value | Description
 
 Clean static files directory
 
-```php
+```
 php artisan static-site:clean
 ```
 
@@ -126,7 +126,7 @@ Argument | Default Value | Description
 
 Create new config file with default parameters or merge with existing config file
 
-```php
+```
 php artisan static-site:publish
 ```
 
