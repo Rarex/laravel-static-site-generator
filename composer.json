@@ -1,0 +1,25 @@
+{
+  "name": "rarex/laravel-static-site-generator",
+  "description": "Artisan commands to generate static site from Laravel application",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Rarex",
+      "email": "rarex.dew@gmail.com"
+    }
+  ],
+  "require": {},
+  "require-dev": {},
+  "autoload": {
+    "psr-4": {
+      "Rarex\\LaravelStaticSiteGenerator\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Rarex\\LaravelStaticSiteGenerator\\Providers\\ServiceProvider"
+      ]
+    }
+  }
+}

@@ -1,2 +1,2 @@
-# laravel-static-site-generator
+# Laravel static site generator
 Artisan commands to generate static site from Laravel application
