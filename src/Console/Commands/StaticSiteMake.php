@@ -3,6 +3,7 @@
 namespace Rarex\LaravelStaticSiteGenerator\Console\Commands;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 
@@ -32,6 +33,7 @@ class StaticSiteMake extends StaticSite
 {
     const GET_CONTENT_METHOD_APP = 'app';
     const GET_CONTENT_METHOD_CURL = 'curl';
+
     /**
      * The name and signature of the console command.
      *
@@ -165,6 +167,7 @@ class StaticSiteMake extends StaticSite
      * @var Router;
      */
     private $router;
+
     /**
      * @var Request
      */
@@ -173,7 +176,8 @@ class StaticSiteMake extends StaticSite
     /**
      * Create a new command instance.
      *
-     * @return void
+     * @param Router $router
+     * @param Request $request
      */
     public function __construct(Router $router, Request $request)
     {
@@ -189,8 +193,6 @@ class StaticSiteMake extends StaticSite
 
     /**
      * Execute the console command.
-     *
-     * @return null
      */
     public function handle()
     {
@@ -202,6 +204,11 @@ class StaticSiteMake extends StaticSite
         $this->logGeneratedFiles($result);
     }
 
+    /**
+     * Obtain route content and write it to static files
+     *
+     * @return array
+     */
     protected function generateStaticFiles()
     {
         $result = [];
@@ -213,7 +220,7 @@ class StaticSiteMake extends StaticSite
                 continue;
             }
             $fileName = $this->convertUrlToFileName($url);
-            $filePath = $this->getFilePath($fileName);
+            $filePath = $this->getStoragePath($fileName);
             $contentData = $this->getUrlContent($url, $getContentMethod);
             $resultItem = [
                 'url' => $url,
@@ -259,50 +266,6 @@ class StaticSiteMake extends StaticSite
         }
 
         return $result;
-    }
-
-    protected function logGeneratedFiles($files)
-    {
-        $cachedFiles = array_filter($files, function ($item) {
-            return $item['isCached'];
-        });
-        $notCachedFiles = array_filter($files, function ($item) {
-            return !$item['isCached'];
-        });
-        $this->logInfo("Successfully cached:");
-        $this->logTable(['Url', 'Status', 'File', 'Method'], array_map(function ($item) {
-            return [
-                $item['url'],
-                $item['statusCode'],
-                $item['staticFilePath'],
-                $item['method'],
-            ];
-        }, $cachedFiles));
-
-        $this->logInfo("Not cached:");
-        $this->logTable(['Url', 'Status', 'Message', 'Method'], array_map(function ($item) {
-            return [
-                $item['url'],
-                $item['statusCode'],
-                $item['message'],
-                $item['method'],
-            ];
-        }, $notCachedFiles));
-    }
-
-    protected function createIncludeFile($contentGenerationResult)
-    {
-        return $this->createFile($this->getStoragePath('static.php'), $this->generateIncludeFileContent($contentGenerationResult));
-    }
-
-    protected function createGitignoreFile()
-    {
-        return $this->createFile($this->getStoragePath('.gitignore'), $this->generateGitignoreFileContent());
-    }
-
-    protected function getFilePath($fileName)
-    {
-        return $this->getStoragePath() . DIRECTORY_SEPARATOR . $fileName;
     }
 
     /**
@@ -391,7 +354,8 @@ class StaticSiteMake extends StaticSite
      * Obtain url content through app()->handle or curl(for 301, 302 statuses)
      *
      * @param $url
-     * @return array
+     * @param $getContentMethod 'app' or 'curl'
+     * @return array|mixed
      */
     protected function getUrlContent($url, $getContentMethod)
     {
@@ -402,6 +366,12 @@ class StaticSiteMake extends StaticSite
         }
     }
 
+    /**
+     * Get route content through app->handle method
+     *
+     * @param $url
+     * @return array
+     */
     protected function getAppHandleContent($url)
     {
         $data = [
@@ -415,6 +385,7 @@ class StaticSiteMake extends StaticSite
         );
         try {
             ob_start();
+            /** @var Response $response */
             $response = app()->handle($request);
             $echoContent = ob_get_contents();
             ob_end_clean();
@@ -433,7 +404,6 @@ class StaticSiteMake extends StaticSite
     }
 
     /**
-     * Fix issue with url() function
      * Add parameter to skip including of static files
      *
      * @param $url
@@ -446,8 +416,7 @@ class StaticSiteMake extends StaticSite
     }
 
     /**
-     * Make curl request
-     * (for redirect routes)
+     * Get route content through curl request
      *
      * @param $url
      * @return mixed
@@ -507,14 +476,14 @@ class StaticSiteMake extends StaticSite
     }
 
     /**
-     * Generate content for .gitignore
-     * (if addGitignoreToStaticDirectory is true)
+     * Create file for inclusion into index.php
      *
-     * @return string
+     * @param $contentGenerationResult
+     * @return int
      */
-    protected function generateGitignoreFileContent()
+    protected function createIncludeFile($contentGenerationResult)
     {
-        return "*\n!.gitignore\n";
+        return $this->createFile($this->getStoragePath('static.php'), $this->generateIncludeFileContent($contentGenerationResult));
     }
 
     /**
@@ -541,5 +510,60 @@ if (isset($staticFileList[$_SERVER["REQUEST_URI"]])) {
     }
 }';
         return $staticFileContent;
+    }
+
+    /**
+     * Create .gitignore file within static files directory
+     *
+     * @return int
+     */
+    protected function createGitignoreFile()
+    {
+        return $this->createFile($this->getStoragePath('.gitignore'), $this->generateGitignoreFileContent());
+    }
+
+    /**
+     * Generate content for .gitignore
+     * (if addGitignoreToStaticDirectory is true)
+     *
+     * @return string
+     */
+    protected function generateGitignoreFileContent()
+    {
+        return "*\n!.gitignore\n";
+    }
+
+    /**
+     * Log generated files information into console
+     *
+     * @param $files
+     */
+    protected function logGeneratedFiles($files)
+    {
+        $cachedFiles = array_filter($files, function ($item) {
+            return $item['isCached'];
+        });
+        $notCachedFiles = array_filter($files, function ($item) {
+            return !$item['isCached'];
+        });
+        $this->logInfo("Successfully cached:");
+        $this->logTable(['Url', 'Status', 'File', 'Method'], array_map(function ($item) {
+            return [
+                $item['url'],
+                $item['statusCode'],
+                $item['staticFilePath'],
+                $item['method'],
+            ];
+        }, $cachedFiles));
+
+        $this->logInfo("Not cached:");
+        $this->logTable(['Url', 'Status', 'Message', 'Method'], array_map(function ($item) {
+            return [
+                $item['url'],
+                $item['statusCode'],
+                $item['message'],
+                $item['method'],
+            ];
+        }, $notCachedFiles));
     }
 }

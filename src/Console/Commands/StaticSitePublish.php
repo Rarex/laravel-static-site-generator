@@ -51,8 +51,6 @@ class StaticSitePublish extends StaticSite
 
     /**
      * Execute the console command.
-     *
-     * @return null
      */
     public function handle()
     {
@@ -63,16 +61,30 @@ class StaticSitePublish extends StaticSite
         $this->writeConfigFile($config);
     }
 
+    /**
+     * Write config array to config file
+     *
+     * @param $config
+     * @return int
+     */
     protected function writeConfigFile($config)
     {
         return $this->createFile($this->getCurrentConfigFilePath(), $this->generateConfigFileContent($config));
     }
 
+    /**
+     * Return config file path
+     */
     protected function getCurrentConfigFilePath()
     {
         return config_path($this->configFileName) . '.php';
     }
 
+    /**
+     * Generate default config
+     *
+     * @return array
+     */
     protected function generateDefaultConfig()
     {
         $classList = [
@@ -112,6 +124,12 @@ class StaticSitePublish extends StaticSite
         return $config;
     }
 
+    /**
+     * Merge default config with existed config file
+     *
+     * @param $config
+     * @return mixed
+     */
     protected function mergeWithCurrentConfig($config)
     {
         $currentConfigFilePath = $this->getCurrentConfigFilePath();
@@ -129,6 +147,12 @@ class StaticSitePublish extends StaticSite
         return $config;
     }
 
+    /**
+     * Generate config file content
+     *
+     * @param $config
+     * @return array|string
+     */
     protected function generateConfigFileContent($config)
     {
         $content = ["<?php\n\n return [\n"];
@@ -148,6 +172,13 @@ class StaticSitePublish extends StaticSite
         return $content;
     }
 
+    /**
+     * Custom var_export realization
+     *
+     * @param $var
+     * @param string $indent
+     * @return mixed|string
+     */
     private function export_variable($var, $indent = "")
     {
         switch (gettype($var)) {

@@ -14,6 +14,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class StaticSite extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
     protected $signature = 'static-site';
 
     /**
@@ -70,6 +75,13 @@ class StaticSite extends Command
         parent::__construct();
     }
 
+    /**
+     * Overwrite properties with input options
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return mixed
+     */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         foreach ($this->options() as $key => $value) {
@@ -85,6 +97,9 @@ class StaticSite extends Command
         return parent::execute($input, $output);
     }
 
+    /**
+     * Execute the console command.
+     */
     public function handle()
     {
         $this->logInfo('Start static-site:clean');
@@ -99,7 +114,7 @@ class StaticSite extends Command
     }
 
     /**
-     * Verbose only log function
+     * Verbose based info log
      *
      * @param $text
      */
@@ -108,11 +123,22 @@ class StaticSite extends Command
         $this->info($text, OutputInterface::VERBOSITY_VERBOSE);
     }
 
+    /**
+     * Verbose based warning log
+     *
+     * @param $text
+     */
     protected function logWarning($text)
     {
         $this->warn($text, OutputInterface::VERBOSITY_VERBOSE);
     }
 
+    /**
+     * Verbose based table log
+     *
+     * @param $columns
+     * @param $data
+     */
     protected function logTable($columns, $data)
     {
         if ($this->option('verbose')) {
@@ -121,8 +147,9 @@ class StaticSite extends Command
     }
 
     /**
-     * Root director for static files
+     * Root directory for static files
      *
+     * @param string|null $toFile
      * @return string
      */
     protected function getStoragePath($toFile = null)
@@ -131,6 +158,12 @@ class StaticSite extends Command
         return $toFile ? $storagePath . DIRECTORY_SEPARATOR . $toFile : $storagePath;
     }
 
+    /**
+     * Create file and directory if required
+     * @param $filePath
+     * @param $content
+     * @return int
+     */
     protected function createFile($filePath, $content)
     {
         $this->logInfo('Create: ' . $filePath);

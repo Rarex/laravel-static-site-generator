@@ -4,8 +4,6 @@ namespace Rarex\LaravelStaticSiteGenerator\Console\Commands;
 
 use Illuminate\Support\Facades\File;
 
-//use \Symfony\Component\HttpFoundation\Request;
-
 /**
  * Class StaticSiteClean
  *
@@ -32,14 +30,15 @@ class StaticSiteClean extends StaticSite
 
     /**
      * Execute the console command.
-     *
-     * @return null
      */
     public function handle()
     {
         $this->cleanStaticFilesDirectory();
     }
 
+    /**
+     * Clean static files directory
+     */
     protected function cleanStaticFilesDirectory()
     {
         $dirPath = $this->getStoragePath();
