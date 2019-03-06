@@ -8,7 +8,9 @@
       "email": "rarex.dew@gmail.com"
     }
   ],
-  "require": {},
+  "require": {
+    "php": "^7.1.3"
+  },
   "require-dev": {},
   "autoload": {
     "psr-4": {
