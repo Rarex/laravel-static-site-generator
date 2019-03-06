@@ -19,7 +19,14 @@ class StaticSite extends Command
      *
      * @var string
      */
-    protected $signature = 'static-site';
+    protected $signature = 'static-site
+        {--configFileName= : Config file name within app config directory}
+        {--storageDirectoryName= : Directory name within storage Directory}
+        {--createdDirectoryPermission= : Chmod permissions for created Directory}
+        {--createdFilePermission= : Chmod permissions for newly created files}
+        {--createdDirectoryPermission= : Chmod permissions for created directory}
+        {--createdFilePermission= : Chmod permissions for newly created files}
+    ';
 
     /**
      * The console command description.
@@ -56,6 +63,17 @@ class StaticSite extends Command
      */
     protected $createdFilePermission = 0644;
 
+
+    /**
+     * Parameters to be converted as octal
+     *
+     * @var array
+     */
+    protected $octalParamList = [
+        'createdFilePermission',
+        'createdDirectoryPermission',
+    ];
+
     /**
      * Create a new command instance.
      *
@@ -90,6 +108,9 @@ class StaticSite extends Command
             }
             if (in_array($value, ['true', 'false'])) {
                 $value = $value === 'true';
+            }
+            if (in_array($key, $this->octalParamList)) {
+                $value = intval(base_convert($value, 8, 10));
             }
             $this->$key = $value;
         }

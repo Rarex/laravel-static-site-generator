@@ -37,16 +37,7 @@ class StaticSitePublish extends StaticSite
         'signature',
         'description',
         'configFileName',
-    ];
-
-    /**
-     * Parameters to be converted as octal
-     *
-     * @var array
-     */
-    protected $octalParamList = [
-        'createdFilePermission',
-        'createdDirectoryPermission',
+        'octalParamList',
     ];
 
     /**
@@ -125,7 +116,7 @@ class StaticSitePublish extends StaticSite
     }
 
     /**
-     * Merge default config with existed config file
+     * Merge default config with existing config file
      *
      * @param $config
      * @return mixed

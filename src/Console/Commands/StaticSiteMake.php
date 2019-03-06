@@ -24,7 +24,7 @@ class StaticSiteMake extends StaticSite
      */
     protected $signature = 'static-site:make
         {--configFileName= : Config file name within app config directory}
-        {--storageDirectoryName= : Directory name within storage Directory}
+        {--storageDirectoryName= : Directory name within storage directory}
         {--urlList=* : Urls to be converted into static files}
         {--skipUrlList=* : Urls to be skipped on auto generation}
         {--auto= : Automatically discover routes
@@ -38,7 +38,7 @@ class StaticSiteMake extends StaticSite
         {--prependEchoContent= : "Echo" output will be prepended to route content}
         {--defaultGetContentMethod= : Get content method (app/curl)}
         {--rootUrlFileName= : File name for root url like \'/\'}
-        {--createdDirectoryPermission= : Chmod permissions for created Directory}
+        {--createdDirectoryPermission= : Chmod permissions for created directory}
         {--createdFilePermission= : Chmod permissions for newly created files}
     ';
 
