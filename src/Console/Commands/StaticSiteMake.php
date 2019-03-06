@@ -10,23 +10,6 @@ use Illuminate\Routing\Router;
 /**
  * Class StaticSiteMake
  *
- * TODO: Move to package
- * TODO: Write readme
- * TODO: Add tests
- *
- * TODO: +csrf problem -> if found csrf input -> skip generation
- * TODO: +properties as params
- * TODO: +Add Comments
- * TODO: +Handle echos
- * TODO: +Exlude url list
- * TODO: +handle all routes
- * TODO: +handle $http_response_header for file_get_content response
- * TODO: +handle redirects
- * TODO: +keep directory structure for nested urls
- * TODO: +clean static directory before file generation
- * TODO: +pass more info to generateIncludeFileContent function
- * TODO: +Add comments
- *
  * @package App\Console\Commands
  */
 class StaticSiteMake extends StaticSite
@@ -46,13 +29,13 @@ class StaticSiteMake extends StaticSite
         {--skipUrlList=* : Urls to be skipped on auto generation}
         {--auto= : Automatically discover routes
         {--autoRequestMethodList=* : Only routes with specified method will be automatically converted to static files}
-        {--autoSkipParametrized : Parametrized routes will not be automatically converted to static files}
-        {--autoSkipCSRFInput : Pages with csrf forms will be skipped on auto generation}
-        {--autoSkipCSRFMeta : Pages with csrf meta tag will be skipped on auto generation}
+        {--autoSkipParametrized= : Parametrized routes will not be automatically converted to static files}
+        {--autoSkipCSRFInput= : Pages with csrf forms will be skipped on auto generation}
+        {--autoSkipCSRFMeta= : Pages with csrf meta tag will be skipped on auto generation}
         {--httpStatusCodeList=* : Http status codes to be converted to static files}
-        {--addGitignoreToStaticDirectory : Add .gitignore file static files directory}
+        {--addGitignoreToStaticDirectory= : Add .gitignore file static files directory}
         {--staticFileExtension= : Extension will be added to static file name}
-        {--prependEchoContent : "Echo" output will be prepended to route content}
+        {--prependEchoContent= : "Echo" output will be prepended to route content}
         {--defaultGetContentMethod= : Get content method (app/curl)}
         {--rootUrlFileName= : File name for root url like \'/\'}
         {--createdDirectoryPermission= : Chmod permissions for created Directory}
